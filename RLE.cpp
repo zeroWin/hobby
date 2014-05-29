@@ -87,8 +87,8 @@ void RLE::RLE_ya()
 
 void RLE::RLE_jie()
 {
-	unsigned char ReadBuffer[1] = { 0 };
-	unsigned char WriteBuffer[1] = { 0 };
+	unsigned char ReadBuffer[BUFFERSIZE] = { 0 };
+	unsigned char WriteBuffer[BUFFERSIZE] = { 0 };
 
 	//获取并合成文件名
 	CString filePath = path.Left(path.ReverseFind('\\') + 1);	//路径
@@ -121,31 +121,51 @@ void RLE::RLE_jie()
 	int IfData = 0;
 	int DataNum = 0;
 	int dataWrite = 0;
-	while ((readNum = fileIn.Read(ReadBuffer, 1)) != 0)
+	while ((readNum = fileIn.Read(ReadBuffer, BUFFERSIZE)) != 0)
 	{
-		if (IfData == 0)
+		int numRead = 0;
+		for (int i = 0; i < readNum; i++)
 		{
-			DataNum = ReadBuffer[0];
-			IfData = 1;
-			dataWrite = 0;
-		}
-		else if (IfData == 1)	//写数据
-		{
-			if ((DataNum & 0x80) == 0x80)		 //首位是1，不同
+			if (IfData == 0)
 			{
-				fileOut.Write(ReadBuffer, 1);
-				dataWrite++;
-				if (dataWrite == (DataNum & 0x7F))
-					IfData = 0;
+				DataNum = ReadBuffer[i];
+				IfData = 1;
+				dataWrite = 0;
 			}
-			else								 //首位是0，相同
-			{						
-				for (int i = 0; i < (DataNum & 0x7F); i++)
-					fileOut.Write(ReadBuffer, 1);
-				IfData = 0;
+			else
+			{
+				if ((DataNum & 0x80) == 0x80)	//数据不同
+				{
+					WriteBuffer[numRead] = ReadBuffer[i];
+					numRead++;
+					if (numRead == BUFFERSIZE)
+					{
+						fileOut.Write(WriteBuffer, numRead);
+						numRead = 0;
+					}
+					dataWrite++;
+					if (dataWrite == (DataNum & 0x7F))
+						IfData = 0;
+				}
+				else							//数据相同
+				{
+					for (int j = 0; j < (DataNum & 0x7F); j++)
+					{
+						WriteBuffer[numRead] = ReadBuffer[i];
+						numRead++;
+						if (numRead == BUFFERSIZE)
+						{
+							fileOut.Write(WriteBuffer, numRead);
+							numRead = 0;
+						}
+					}
+					IfData = 0;
+				}
 			}
 
 		}
+		if (numRead != 0)
+			fileOut.Write(WriteBuffer, numRead);
 	}
 	fileOut.Close();
 	fileIn.Close();

@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 
 #include "RLE.h"
+#include "LZ.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -51,6 +52,8 @@ END_MESSAGE_MAP()
 
 CMFCApplication1Dlg::CMFCApplication1Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMFCApplication1Dlg::IDD, pParent)
+	, IDC_radioButton_RLE(0)
+	, IDC_radioButton_LZ(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -162,8 +165,23 @@ void CMFCApplication1Dlg::OnBnClickedButton1()
 	// TODO:  在此添加控件通知处理程序代码
 	CString path;
 	IDC_MFCEDITBROWSE_1.GetWindowTextW(path);
-	RLE rle1(path);
-	rle1.RLE_ya();
+
+	int m = GetCheckedRadioButton(IDC_RADIO1, IDC_RADIO2);
+	if (m == 1003)
+	{
+		RLE rle1(path);
+		rle1.RLE_ya();
+	}
+	else if (m == 1004)
+	{
+		LZ lz(path);
+		lz.LZ_ya();
+	}
+	else
+	{
+		MessageBox(_T("请选择一种压缩方式"));
+		return;
+	}
 	MessageBox(_T("压缩完成"));
 }
 
@@ -175,7 +193,22 @@ void CMFCApplication1Dlg::OnBnClickedButton2()
 	// TODO:  在此添加控件通知处理程序代码
 	CString path;
 	IDC_MFCEDITBROWSE_1.GetWindowTextW(path);
-	RLE rle1(path);
-	rle1.RLE_jie();
+
+	int m = GetCheckedRadioButton(IDC_RADIO1, IDC_RADIO2);
+	if (m == 1003)
+	{
+		RLE rle1(path);
+		rle1.RLE_jie();
+	}
+	else if (m == 1004)
+	{
+		LZ lz(path);
+		lz.LZ_jie();
+	}
+	else
+	{
+		MessageBox(_T("请选择一种解压方式"));
+		return;
+	}
 	MessageBox(_T("解压完成"));
 }

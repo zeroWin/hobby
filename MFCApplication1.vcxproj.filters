@@ -36,6 +36,9 @@
     <ClInclude Include="RLE.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="LZ.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCApplication1.cpp">
@@ -48,6 +51,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="RLE.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LZ.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

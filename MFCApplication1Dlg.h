@@ -34,4 +34,6 @@ public:
 	CMFCEditBrowseCtrl IDC_MFCEDITBROWSE_1;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
+	int IDC_radioButton_RLE;
+	int IDC_radioButton_LZ;
 };
